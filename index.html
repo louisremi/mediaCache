@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>mediaCache</title>
+	<link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:700' rel='stylesheet' type='text/css'>
+	<style>
+		body {
+			background: #333 url('http://subtlepatterns.com/patterns/black_linen_v2.png');
+			color: #ddd;
+			width: 960px;
+			margin: 0 auto;
+			font-family: Arial, Helvetica, 'Liberation Sans', sans-serif;
+		}
+		
+		h1, h2 {
+			font-family: 'Cabin Sketch', sans-serif;
+			color: white;
+		}
+		h1 { font-size: 2.5em; }
+		h2 { font-size: 1.4em; }
+		
+		.com { color: #999;	}
+		.str { color: #bfac00; }
+		.kwd { color: #8104FF; }
+		
+		.credits { text-align: right; }
+		
+		#demo>div {
+			display: inline-block;
+			margin: 0 40px;
+		}
+		#demo img, #demo video {
+			display: block;
+			border: 10px solid #555;
+			border-radius: 5px;
+			width: 220px;
+		}
+		#demo .cacheBtnWrapper {
+			margin-top: 5px;
+			min-height: 2em;
+			text-align: center;
+		}
+	</style>
+</head>
+<body onload="onload()">
+	
+	<a href="http://github.com/louisremi/mediaCache"><img style="position: absolute; top: 0; right: 0; border: 0;" src="fork_me.png" alt="Fork me on GitHub"></a>
+	
+	<h1>mediaCache</h1>
+	<p>mediaCache lets you put image, audio and video resources in a dynamic cache for offline use.</p>
+	<pre><code><span class="kwd">var</span> url = <span class="str">"http://gravatar.com/avatar/1d924ae6b834d2c43d313a94137ac6fe&x=.png"</span>;
+
+<span class="com">// add a media to the cache while online</span>
+mediaCache.cache( url, successCallback, errorCallback );
+
+<span class="com">// remove a resource from the cache at anytime</span>
+mediaCache.remove( url );
+
+<span class="com">// get a resource from the cache while offline</span>
+mediaCache.get( url, <span class="kwd">function</span>( media ) {
+    <span class="com">// media is an &lt;img&gt;, &lt;audio&gt; or &lt;video&gt; DOM element, based on the resource extension</span>
+    document.body.appendChild( media );
+});
+
+<span class="com">// NB:</span>
+<span class="com">// The URI has to end with a file extension, if it's not the case, add a dummy parameter such as "x=.png" (see example above).</span>
+<span class="com">// Once a URI has been cached, the exact same uri has to be used to "remove()" it or "get()" it from the cache.</span></code></pre>
+
+	<h2>Give it a Try</h2>
+
+		<div id="demo">
+			<div><img width="220" height="170" src="http://d1paf2p8n7w9uz.cloudfront.net/eiffel.jpg" /><div class="cacheBtnWrapper"></div></div
+			><div><img width="220" height="170" src="http://d1paf2p8n7w9uz.cloudfront.net/eiffel.gif" /><div class="cacheBtnWrapper"></div></div
+			><div><video width="220" height="170" src="http://d1paf2p8n7w9uz.cloudfront.net/eiffel.webm" controls></video><div class="cacheBtnWrapper"></div></div>
+		</div>
+
+		<p>
+			In Chrome: open <strong>chrome://appcache-internals/</strong>, refresh it after every cache or remove.</br>
+			In Firefox: clear the <strong>browser cache</strong> (preferences &gt; advanced), cache above resources, 
+			switch to offline mode, and click here to <button id="reload">reload from cache</button>.
+		</p>
+
+	<h2>How Does That Work?</h2>
+	<p>mediaCache is the combination of a server-side script (currently available in php) and a JS library:</p>
+	<ul>
+		<li>The server-side script generates iframes and unique appcache manifest for each resource request,
+		so that every resource resides in its own cache group and can be cached/removed at will.
+		<li>The JS library knows how to send requests to the server-side script.
+	</ul>
+	
+	<h2>What Are The Limitations?</h2>
+	<ul>
+		<li>Obviously the browser needs to be compatible with <a href="http://www.w3.org/TR/html5/offline.html">Appcache</a>.
+		<li>The JS library and the server-side script need to reside on the same origin (<i>e.g.</i> http://subdomain.domain.tld).
+	</ul>
+
+	<h2>How can it be improved?</h2>
+	
+	<p>
+		I'm looking for feedback regarding both the API and the logic. 
+		I'd like to encourage people to port the server-side script to their favorite language.
+	</p>
+	
+	<p class="credits">by <a href="http://twitter.com/louis_remi">@louis_remi</a></p>
+	
+	<div style="margin-top: 100px; width: 600px;" id="disqus_thread"></div>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+	
+	<script src="mediaCache.js"></script>
+	<script type="text/javascript">
+		function onload() {
+			if ( !( "applicationCache" ) in window ) {
+				return;
+			}
+			
+			var wrappers, wrapper, i, cacheBtn;
+			
+			wrappers = document.getElementsByClassName("cacheBtnWrapper");
+			i = wrappers.length;
+			cacheBtn = document.createElement("button");
+			
+			cacheBtn.innerHTML = "cache";
+			cacheBtn.className = "cacheBtn";
+			
+			while ( i-- ) {
+				wrappers[i].appendChild( cacheBtn.cloneNode(true) );
+			}
+			
+			document.getElementById("demo").addEventListener("click", function( e ) {
+				if ( e.target.className === "cacheBtn" && !e.target.disabled ) {
+					var btn = e.target,
+						uri = btn.parentNode.parentNode.firstChild.src;
+
+					if ( btn.innerHTML === "cache" ) {
+						mediaCache.cache( uri, function() {
+							btn.innerHTML = "remove";
+							btn.disabled = null;
+
+						});
+						btn.disabled = true;
+
+					} else {
+						mediaCache.remove( uri );
+						btn.innerHTML = "cache";
+					}
+				}
+			});
+
+			document.getElementById("reload").onclick = function() {
+				wrappers = document.getElementById("demo").childNodes;
+				i = wrappers.length;
+
+				function replace( wrapper ) {
+					mediaCache.get( wrapper.firstChild.src, function( media ) {
+						media.controls = true;
+						wrapper.appendChild( media );
+					});
+					wrapper.innerHTML = "";
+				}
+
+				while ( i-- ) {
+					wrapper = wrappers[i];
+					if ( wrapper.nodeName.toUpperCase() === "DIV" ) {
+						replace(wrapper);
+					}
+				}
+			}
+		}
+	
+	    var disqus_shortname = 'mediacache';
+	
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+	</script>
+</body>
+</html>
