@@ -15,10 +15,12 @@
 		
 		h1, h2 {
 			font-family: 'Cabin Sketch', sans-serif;
-			color: white;
+			color: #eee;
 		}
 		h1 { font-size: 2.5em; }
 		h2 { font-size: 1.4em; }
+		
+		a { color: #8104FF; }
 		
 		.com { color: #999;	}
 		.str { color: #bfac00; }
@@ -48,7 +50,11 @@
 	<a href="http://github.com/louisremi/mediaCache"><img style="position: absolute; top: 0; right: 0; border: 0;" src="fork_me.png" alt="Fork me on GitHub"></a>
 	
 	<h1>mediaCache</h1>
-	<p>mediaCache lets you put image, audio and video resources in a dynamic cache for offline use.</p>
+	<p>
+		mediaCache lets you put image, audio and video resources in a dynamic cache for offline use.<br/>
+		You can now build a Twitter or Google Maps client using Open Web technologies only
+		(read why <a href="http://www.louisremi.com/2011/10/07/offline-web-applications-were-not-there-yet/">this was impossible</a> before).
+	</p>
 	<pre><code><span class="kwd">var</span> url = <span class="str">"http://gravatar.com/avatar/1d924ae6b834d2c43d313a94137ac6fe&x=.png"</span>;
 
 <span class="com">// add a media to the cache while online</span>
@@ -63,7 +69,6 @@ mediaCache.get( url, <span class="kwd">function</span>( media ) {
     document.body.appendChild( media );
 });
 
-<span class="com">// NB:</span>
 <span class="com">// The URI has to end with a file extension, if it's not the case, add a dummy parameter such as "x=.png" (see example above).</span>
 <span class="com">// Once a URI has been cached, the exact same uri has to be used to "remove()" it or "get()" it from the cache.</span></code></pre>
 
@@ -76,7 +81,7 @@ mediaCache.get( url, <span class="kwd">function</span>( media ) {
 		</div>
 
 		<p>
-			In Chrome: open <strong>chrome://appcache-internals/</strong>, refresh it after every cache or remove.</br>
+			In Chrome: open <strong>chrome://appcache-internals/</strong>, refresh it after every cache or remove.<br/>
 			In Firefox: clear the <strong>browser cache</strong> (preferences &gt; advanced), cache above resources, 
 			switch to offline mode, and click here to <button id="reload">reload from cache</button>.
 		</p>
@@ -88,11 +93,11 @@ mediaCache.get( url, <span class="kwd">function</span>( media ) {
 		so that every resource resides in its own cache group and can be cached/removed at will.
 		<li>The JS library knows how to send requests to the server-side script.
 	</ul>
-	
+
 	<h2>What Are The Limitations?</h2>
 	<ul>
 		<li>Obviously the browser needs to be compatible with <a href="http://www.w3.org/TR/html5/offline.html">Appcache</a>.
-		<li>The JS library and the server-side script need to reside on the same origin (<i>e.g.</i> http://subdomain.domain.tld).
+		<li>Your website and the server-side script need to reside on the same origin (e.g. http://subdomain.domain.tld), medias can be hosted anywhere (Yay!).
 	</ul>
 
 	<h2>How can it be improved?</h2>
