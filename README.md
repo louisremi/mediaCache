@@ -2,7 +2,7 @@ mediaCache
 ==========
 
 mediaCache lets you put image, audio and video resources in a dynamic cache for offline use.  
-You can now build a Twitter or Google Maps client using Open Web technologies only (read why this wasn't possible before). 
+You can now build a Twitter or Google Maps client using Open Web technologies only (read why [this was impossible](http://www.louisremi.com/2011/10/07/offline-web-applications-were-not-there-yet/) before). 
 
     var url = "http://gravatar.com/avatar/1d924ae6b834d2c43d313a94137ac6fe";
     
