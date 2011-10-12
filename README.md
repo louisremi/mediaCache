@@ -14,6 +14,9 @@ mediaCache
         // media is an <img>, <audio> or <video> DOM element, based on the resource extension
         document.body.appendChild( media );
     });
+    
+    // The URI has to end with a file extension, if it's not the case, add a dummy parameter such as "x=.png" (see example above).
+    // Once a URI has been cached, the exact same uri has to be used to "remove()" it or "get()" it from the cache.
 
 How Does That Work?
 -------------------
