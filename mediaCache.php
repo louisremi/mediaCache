@@ -78,6 +78,7 @@ if ( isset( $_GET['manifest'] ) ) {
 				case 'mp3':
 				case 'mp4a':
 				case 'oga':
+				case 'ogg':
 				case 'wav':
 				case 'weba':
 					echo "<audio id='media' src='$decodeduri'></audio>\n";
